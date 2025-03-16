@@ -52,7 +52,7 @@ const Main = () => {
           {topMovies?.map((movie) => (
             <VideoCard
               key={movie._id}
-              image={`{movie.image}`}
+              image={`${movie.image}`}
               title={movie.name}
               date={movie.year}
               comments={movie.numReviews}

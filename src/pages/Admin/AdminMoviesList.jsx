@@ -25,7 +25,7 @@ const AdminMoviesList = () => {
                     className="max-w-sm  m-[2rem] rounded overflow-hidden shadow-lg"
                   >
                     <img
-                      src={`{movie.image}`}
+                      src={`${movie.image}`}
                       alt={movie.name}
                       className="w-full h-48 object-cover"
                     />
