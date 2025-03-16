@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useGetAllMoviesQuery } from "../../redux/api/movies";
-import { IMG_URL } from "../../redux/constants";
 
 const AdminMoviesList = () => {
   const { data: movies } = useGetAllMoviesQuery();
@@ -26,7 +25,7 @@ const AdminMoviesList = () => {
                     className="max-w-sm  m-[2rem] rounded overflow-hidden shadow-lg"
                   >
                     <img
-                      src={`${IMG_URL}${movie.image}`}
+                      src={`{movie.image}`}
                       alt={movie.name}
                       className="w-full h-48 object-cover"
                     />

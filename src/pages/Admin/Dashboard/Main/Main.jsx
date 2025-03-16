@@ -8,7 +8,6 @@ import {
 } from "../../../../redux/api/movies";
 import { useGetUsersQuery } from "../../../../redux/api/users";
 import RealTimeCard from "./RealTimeCard";
-import { IMG_URL } from "../../../../redux/constants";
 
 const Main = () => {
   const { data: topMovies } = useGetTopMoviesQuery();
@@ -53,7 +52,7 @@ const Main = () => {
           {topMovies?.map((movie) => (
             <VideoCard
               key={movie._id}
-              image={`${IMG_URL}${movie.image}`}
+              image={`{movie.image}`}
               title={movie.name}
               date={movie.year}
               comments={movie.numReviews}
