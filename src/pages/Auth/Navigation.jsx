@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AiOutlineHome,
   AiOutlineLogin,
   AiOutlineUserAdd,
+  AiOutlineMenu,
+  AiOutlineClose,
 } from "react-icons/ai";
-import { MdOutlineLocalMovies } from "react-icons/md";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { IoPersonCircleOutline } from "react-icons/io5";
+import { MdOutlineSpaceDashboard } from "react-icons/md";
+import { BiCameraMovie } from "react-icons/bi";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/api/users";
 import { logout } from "../../redux/features/auth/authSlice";
@@ -14,15 +17,15 @@ import { logout } from "../../redux/features/auth/authSlice";
 const Navigation = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [logoutApiCall] = useLogoutMutation();
+
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
   const logoutHandler = async () => {
     try {
@@ -34,124 +37,183 @@ const Navigation = () => {
     }
   };
 
+  // Detect scroll to add shadow effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <div className="fixed bottom-10 left-[30rem] transform translate-x-1/2 translate-y-1/2 z-50 bg-[#0f0f0f] border w-[30%] px-[4rem] mb-[2rem] rounded">
-      <section className="flex justify-between items-center">
-        {/* Section 1 */}
-        <div className="flex justify-center items-center mb-[2rem]">
-          <Link
-            to="/"
-            className="flex items-center transition-transform transform hover:translate-x-2"
-          >
-            <AiOutlineHome className="mr-2 mt-[3rem]" size={26} />
-            <span className="hidden nav-item-name mt-[3rem]">Home</span>
-          </Link>
-
-          <Link
-            to="/movies"
-            className="flex items-center transition-transform transform hover:translate-x-2 ml-[1rem]"
-          >
-            <MdOutlineLocalMovies className="mr-2 mt-[3rem]" size={26} />
-            <span className="hidden nav-item-name mt-[3rem]">SHOP</span>
-          </Link>
-        </div>
-        {/* Section 2 */}
-        <div className="relative">
+    <nav
+      className={`fixed top-0 left-0 w-full bg-gray-800
+ text-white z-50 transition-all ${isScrolled ? "shadow-lg" : ""}`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Mobile Menu Toggle Button */}
           <button
-            onClick={toggleDropdown}
-            className="text-gray-800 focus:outline-none"
+            onClick={toggleMobileMenu}
+            className="md:hidden text-white ml-4"
           >
-            {userInfo ? (
-              <span className="text-white">{userInfo.username}</span>
+            {mobileMenuOpen ? (
+              <AiOutlineClose size={24} />
             ) : (
-              <></>
-            )}
-
-            {userInfo && (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className={`h-4 w-4 ml-1 ${
-                  dropdownOpen ? "transform rotate-180" : ""
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="white"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d={dropdownOpen ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
-                />
-              </svg>
+              <AiOutlineMenu size={24} />
             )}
           </button>
 
-          {dropdownOpen && userInfo && (
-            <ul
-              className={`absolute right-0 mt-2 mr-14 w-[10rem] space-y-2 bg-white text-gray-600 ${
-                !userInfo.isAdmin ? "-top-20" : "-top-24"
-              }`}
-            >
-              {userInfo.isAdmin && (
-                <>
-                  <li>
-                    <Link
-                      to="/admin/movies/dashboard"
-                      className="block px-4 py-2 hover:bg-gray-100"
-                    >
-                      Dashboard
-                    </Link>
-                  </li>
-                </>
-              )}
+          {/* Left - Logo and Navigation */}
 
-              <li>
+          <div className="hidden md:flex md:items-center md:space-x-12">
+            {userInfo && (
+              <>
+                {" "}
                 <Link
-                  to="/profile"
-                  className="block px-4 py-2 hover:bg-gray-100"
+                  to="/"
+                  className="flex items-center text-lg font-semibold hover:text-teal-400 transition"
                 >
-                  Profile
+                  <AiOutlineHome size={24} className="mr-2" />
+                  Home
                 </Link>
-              </li>
+                <Link
+                  to="/movies"
+                  className="flex items-center text-lg font-semibold hover:text-teal-400 transition"
+                >
+                  <BiCameraMovie size={24} className="mr-2" />
+                  Movies
+                </Link>
+              </>
+            )}
+            {userInfo?.isAdmin && (
+              <Link
+                to="/admin/movies/dashboard"
+                className="hidden md:flex items-center text-lg font-semibold hover:text-teal-400 transition"
+              >
+                <MdOutlineSpaceDashboard size={24} className="mr-2" />
+                Admin Dashboard
+              </Link>
+            )}
+            {userInfo && (
+              <Link
+                to="/profile"
+                className="hidden md:flex items-center text-lg font-semibold hover:text-teal-400 transition"
+              >
+                <IoPersonCircleOutline size={24} className="mr-2" />
+                Profile
+              </Link>
+            )}
+          </div>
 
-              <li>
+          {/* Right - User Profile & Auth */}
+          <div className="relative flex items-center">
+            {userInfo ? (
+              <>
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center focus:outline-none"
+                >
+                  <span className="mr-2">{userInfo.username}</span>
+                </button>
+
                 <button
                   onClick={logoutHandler}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                  className="hidden md:block w-full px-2 py-[4px] rounded-lg bg-gray-700 text-center"
                 >
                   Logout
                 </button>
-              </li>
-            </ul>
-          )}
 
-          {!userInfo && (
-            <ul className="flex">
-              <li>
+              </>
+            ) : (
+              <div className="hidden md:flex space-x-4">
                 <Link
                   to="/login"
-                  className="flex items-center mt-5 transition-transform transform hover:translate-x-2 mb-[2rem]"
+                  className="flex items-center hover:text-teal-400 transition"
                 >
-                  <AiOutlineLogin className="mr-2 mt-[4px]" size={26} />
-                  <span className="hidden nav-item-name">LOGIN</span>
+                  <AiOutlineLogin size={24} className="mr-2" />
+                  Login
                 </Link>
-              </li>
-
-              <li>
                 <Link
                   to="/register"
-                  className="flex items-center mt-5 transition-transform transform hover:translate-x-2 ml-[1rem]"
+                  className="flex items-center hover:text-teal-400 transition"
                 >
-                  <AiOutlineUserAdd size={26} />
-                  <span className="hidden nav-item-name">REGISTER</span>
+                  <AiOutlineUserAdd size={24} className="mr-2" />
+                  Register
                 </Link>
-              </li>
-            </ul>
-          )}
+              </div>
+            )}
+          </div>
         </div>
-      </section>
-    </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-gray-900 text-white py-4 px-6 space-y-4">
+            <Link
+              to="/"
+              className="block text-lg font-semibold hover:text-teal-400 transition"
+              onClick={toggleMobileMenu}
+            >
+              Home
+            </Link>
+            <Link
+              to="/movies"
+              className="block text-lg font-semibold hover:text-teal-400 transition"
+              onClick={toggleMobileMenu}
+            >
+              Movies
+            </Link>
+            {userInfo?.isAdmin && (
+              <Link
+                to="/admin/movies/dashboard"
+                className="block text-lg font-semibold hover:text-teal-400 transition"
+                onClick={toggleMobileMenu}
+              >
+                Admin Dashboard
+              </Link>
+            )}
+            {userInfo && (
+              <Link
+                to="/profile"
+                className="block text-lg font-semibold hover:text-teal-400 transition"
+                onClick={toggleMobileMenu}
+              >
+                Profile
+              </Link>
+            )}
+            {!userInfo ? (
+              <>
+                <Link
+                  to="/login"
+                  className="block text-lg font-semibold hover:text-teal-400 transition"
+                  onClick={toggleMobileMenu}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="block text-lg font-semibold hover:text-teal-400 transition"
+                  onClick={toggleMobileMenu}
+                >
+                  Register
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  logoutHandler();
+                  toggleMobileMenu();
+                }}
+                className="block w-full text-left text-lg font-semibold hover:text-teal-400 transition"
+              >
+                Logout
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    </nav>
   );
 };
 

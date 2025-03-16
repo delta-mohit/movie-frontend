@@ -16,8 +16,9 @@ const MoviesContainerPage = () => {
 
   const [selectedGenre, setSelectedGenre] = useState(null);
 
+  // Toggle genre filter: If clicked again, remove filter
   const handleGenreClick = (genreId) => {
-    setSelectedGenre(genreId);
+    setSelectedGenre((prev) => (prev === genreId ? null : genreId));
   };
 
   const filteredMovies = data?.filter(
@@ -25,35 +26,82 @@ const MoviesContainerPage = () => {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row lg:justify-between items-center">
-      <nav className=" ml-[4rem] flex flex-row xl:flex-col lg:flex-col md:flex-row sm:flex-row">
-        {genres?.map((g) => (
-          <button
-            key={g._id}
-            className={`transition duration-300 ease-in-out hover:bg-gray-200 block p-2 rounded mb-[1rem] text-lg ${
-              selectedGenre === g._id ? "bg-gray-200" : ""
-            }`}
-            onClick={() => handleGenreClick(g._id)}
-          >
-            {g.name}
-          </button>
-        ))}
+    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start mt-10 px-6">
+      {/* Genre Selection Sidebar */}
+      <nav className="w-full lg:w-1/4">
+        <h2 className="text-lg font-semibold text-gray-300 mb-4">Genres</h2>
+        <div className="flex flex-wrap gap-2">
+          <>
+            <button
+              key="1"
+              className={`px-4 py-2 rounded-full text-sm font-medium transition duration-300 border ${
+                selectedGenre === null
+                  ? "bg-teal-500 text-white border-teal-500"
+                  : "bg-gray-800 text-gray-300 border-gray-600 hover:bg-teal-500 hover:text-white"
+              }`}
+              onClick={() => setSelectedGenre(null)}
+            >
+              All Movie
+            </button>
+            {genres?.map((g) => (
+              <button
+                key={g._id}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition duration-300 border ${
+                  selectedGenre === g._id
+                    ? "bg-teal-500 text-white border-teal-500"
+                    : "bg-gray-800 text-gray-300 border-gray-600 hover:bg-teal-500 hover:text-white"
+                }`}
+                onClick={() => handleGenreClick(g._id)}
+              >
+                {g.name}
+              </button>
+            ))}
+          </>
+        </div>
       </nav>
 
-      <section className="flex flex-col justify-center items-center w-full lg:w-auto">
-        <div className="w-full lg:w-[100rem] mb-8 ">
-          <h1 className="mb-5">Choose For You</h1>
-          <SliderUtil data={randomMovies} />
+      {/* Movies Sections */}
+      <section className="w-full lg:w-3/4 space-y-12">
+        <div className="bg-gray-900 p-6 rounded-lg shadow-lg">
+          <h1 className="text-white text-xl font-semibold mb-4">
+            Explore by Genre
+          </h1>
+          {filteredMovies?.length > 0 ? (
+            <SliderUtil data={filteredMovies} />
+          ) : (
+            <div className="flex flex-col items-center justify-center py-6">
+              <p className="text-gray-400 text-lg">
+                No movie found based on your genre selection
+              </p>
+              <p className="text-lg">Try some other genre</p>
+            </div>
+          )}
         </div>
 
-        <div className="w-full lg:w-[100rem] mb-8">
-          <h1 className="mb-5">Top Movies</h1>
-          <SliderUtil data={topMovies} />
+        <div className="bg-gray-900 p-6 rounded-lg shadow-lg">
+          <h1 className="text-white text-xl font-semibold mb-4">
+            Movies You’ll Love
+          </h1>
+          {randomMovies?.length > 0 ? (
+            <SliderUtil data={randomMovies} />
+          ) : (
+            <p className="text-gray-400 text-center py-6">
+              No movies available
+            </p>
+          )}
         </div>
 
-        <div className="w-full lg:w-[100rem] mb-8">
-          <h1 className="mb-5">Choose Movie</h1>
-          <SliderUtil data={filteredMovies} />
+        <div className="bg-gray-900 p-6 rounded-lg shadow-lg">
+          <h1 className="text-white text-xl font-semibold mb-4">
+            Trending Now: Top Rated
+          </h1>
+          {topMovies?.length > 0 ? (
+            <SliderUtil data={topMovies} />
+          ) : (
+            <p className="text-gray-400 text-center py-6">
+              No movies available
+            </p>
+          )}
         </div>
       </section>
     </div>

@@ -3,10 +3,10 @@ import Sidebar from "./Sidebar/Sidebar";
 
 const AdminDashboard = () => {
   return (
-    <>
+    <div className="flex h-screen mt-10">
       <Sidebar />
       <Main />
-    </>
+    </div>
   );
 };
 

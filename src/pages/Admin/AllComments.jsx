@@ -5,8 +5,7 @@ import {
 import { toast } from "react-toastify";
 
 const AllComments = () => {
-  const { data: movie, refetch } = useGetAllMoviesQuery();
-
+  const { data: movies, refetch } = useGetAllMoviesQuery();
   const [deleteComment] = useDeleteCommentMutation();
 
   const handleDeleteComment = async (movieId, reviewId) => {
@@ -20,37 +19,41 @@ const AllComments = () => {
   };
 
   return (
-    <div>
-      {movie?.map((m) => (
-        <section
-          key={m._id}
-          className="flex flex-col justify-center items-center"
-        >
-          {m?.reviews.map((review) => (
-            <div
-              key={review._id}
-              className="bg-[#1A1A1A] p-4 rounded-lg w-[50%] mt-[2rem]"
-            >
-              <div className="flex justify-between">
-                <strong className="text-[#B0B0B0]">{review.name}</strong>
-                <p className="text-[#B0B0B0]">
-                  {review.createdAt.substring(0, 10)}
-                </p>
-              </div>
+    <div className="min-h-screen mt-5 bg-gray-900 text-white flex flex-col items-center p-6">
+      <h1 className="text-2xl font-bold mb-6 text-teal-400">All Comments</h1>
 
-              <p className="my-4">{review.comment}</p>
-
-              <button
-                className="text-red-500"
-                onClick={() => handleDeleteComment(m._id, review._id)}
+      {movies?.length === 0 || !movies?.some((m) => m.reviews.length > 0) ? (
+        <p className="text-gray-400 text-lg">No comments available</p>
+      ) : (
+        movies?.map((movie) => (
+          <section key={movie._id} className="w-full max-w-3xl">
+            {movie.reviews.map((review) => (
+              <div
+                key={review._id}
+                className="bg-gray-800 p-5 rounded-lg shadow-lg mb-4 w-full"
               >
-                Delete
-              </button>
-            </div>
-          ))}
-        </section>
-      ))}
+                <div className="flex justify-between items-center">
+                  <strong className="text-teal-300">{review.name}</strong>
+                  <p className="text-gray-400">
+                    {review.createdAt.substring(0, 10)}
+                  </p>
+                </div>
+
+                <p className="my-3 text-gray-300">{review.comment}</p>
+
+                <button
+                  className="text-red-500 hover:text-red-400 transition duration-200"
+                  onClick={() => handleDeleteComment(movie._id, review._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </section>
+        ))
+      )}
     </div>
   );
 };
+
 export default AllComments;

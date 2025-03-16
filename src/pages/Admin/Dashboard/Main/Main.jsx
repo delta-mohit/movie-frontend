@@ -1,69 +1,62 @@
+// Main.jsx
 import SecondaryCard from "./SecondaryCard";
 import VideoCard from "./VideoCard";
-import ReactTimeCard from "./RealTimeCard";
-
+import RealTimeCard from "./RealTimeCard";
 import {
   useGetTopMoviesQuery,
   useGetAllMoviesQuery,
 } from "../../../../redux/api/movies";
 import { useGetUsersQuery } from "../../../../redux/api/users";
-import RealTimeCard from "./RealTimeCard";
 
 const Main = () => {
   const { data: topMovies } = useGetTopMoviesQuery();
   const { data: visitors } = useGetUsersQuery();
   const { data: allMovies } = useGetAllMoviesQuery();
 
-  const totalCommentsLength = allMovies?.map((m) => m.numReviews);
-  const sumOfCommentsLength = totalCommentsLength?.reduce(
-    (acc, length) => acc + length,
+  const totalComments = allMovies?.reduce(
+    (acc, m) => acc + (m.numReviews || 0),
     0
   );
 
   return (
-    <div>
-      <section className="flex justify-around">
-        <div className="ml-[14rem] mt-10">
-          <div className="-translate-x-4 flex">
-            <SecondaryCard
-              pill="Users"
-              content={visitors?.length}
-              info="20.2k more then usual"
-              gradient="from-teal-500 to-lime-400"
-            />
-            <SecondaryCard
-              pill="Comments"
-              content={sumOfCommentsLength}
-              info="742.8 more then usual"
-              gradient="from-[#CCC514] to-[#CDCB8E]"
-            />
-            <SecondaryCard
-              pill="Movies"
-              content={allMovies?.length}
-              info="372+ more then usual"
-              gradient="from-green-500 to-lime-400"
-            />
-          </div>
-          <div className="flex justify-between w-[90%] text-white mt-10 font-bold">
-            <p>Top Content</p>
-            <p>Comments</p>
-          </div>
+    <div className="flex-1 ml-0 p-6 md:ml-64 text-white">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <SecondaryCard
+          pill="Users"
+          content={visitors?.length}
+          info="20.2k more than usual"
+          gradient="from-teal-500 to-lime-400"
+        />
+        <SecondaryCard
+          pill="Comments"
+          content={totalComments}
+          info="742.8 more than usual"
+          gradient="from-yellow-500 to-orange-400"
+        />
+        <SecondaryCard
+          pill="Movies"
+          content={allMovies?.length}
+          info="372+ more than usual"
+          gradient="from-green-500 to-lime-400"
+        />
+      </div>
 
-          {topMovies?.map((movie) => (
-            <VideoCard
-              key={movie._id}
-              image={`${movie.image}`}
-              title={movie.name}
-              date={movie.year}
-              comments={movie.numReviews}
-            />
-          ))}
-        </div>
+      <h2 className="mt-10 text-lg font-semibold">Top Content</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-5">
+        {topMovies?.map((movie) => (
+          <VideoCard
+            key={movie._id}
+            image={movie.image}
+            title={movie.name}
+            date={movie.year}
+            comments={movie.numReviews}
+          />
+        ))}
+      </div>
 
-        <div>
-          <RealTimeCard />
-        </div>
-      </section>
+      <div className="mt-10">
+        <RealTimeCard />
+      </div>
     </div>
   );
 };

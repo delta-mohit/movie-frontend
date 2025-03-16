@@ -6,23 +6,25 @@ const Header = () => {
   const { data } = useGetNewMoviesQuery();
 
   return (
-    <div className="flex flex-col mt-[2rem] ml-[2rem] md:flex-row justify-between items-center md:items-start">
-      <nav className="w-full md:w-[10rem] ml-0 md:ml-2 mb-4 md:mb-0">
+    <div className="flex flex-col md:flex-row md:gap-4 justify-between items-start mt-8 px-4 md:px-8">
+      {/* Navigation Sidebar */}
+      <nav className="w-full md:w-1/5 space-y-3 text-center md:text-left">
         <Link
           to="/"
-          className="transition duration-300 ease-in-out hover:bg-teal-200  block p-2 rounded mb-1 md:mb-2 text-lg"
+          className="block py-2 px-4 bg-gray-800 text-white rounded-lg shadow-md hover:bg-teal-500 transition duration-300"
         >
           Home
         </Link>
         <Link
           to="/movies"
-          className="transition duration-300 ease-in-out hover:bg-teal-200  block p-2 rounded mb-1 md:mb-2 text-lg"
+          className="block py-2 px-4 bg-gray-800 text-white rounded-lg shadow-md hover:bg-teal-500 transition duration-300"
         >
           Browse Movies
         </Link>
       </nav>
 
-      <div className="w-full lg:w-[100rem] mr-0 md:mr-2">
+      {/* Movie Slider */}
+      <div className="w-full px-6 md:w-4/5 mt-6 md:mt-0">
         <SliderUtil data={data} />
       </div>
     </div>

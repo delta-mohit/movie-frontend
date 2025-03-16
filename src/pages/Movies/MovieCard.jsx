@@ -2,19 +2,19 @@ import { Link } from "react-router-dom";
 
 const MovieCard = ({ movie }) => {
   return (
-    <div key={movie._id} className="relative group m-[2rem]">
-      <Link to={`/movies/${movie._id}`}>
+    <Link to={`/movies/${movie._id}`}>
+      <div className="relative group mx-4 overflow-hidden rounded-lg shadow-lg transition duration-300 transform hover:scale-105">
         <img
-          src={`${movie.image}`}
+          src={movie.image}
           alt={movie.name}
-          className="w-[20rem] h-[20rem] object-cover rounded m-0 p-0 transition duration-300 ease-in-out transform group-hover:opacity-50"
+          className="w-full h-60 object-contain rounded-lg transition-opacity duration-300 group-hover:opacity-50"
         />
-      </Link>
 
-      <p className="absolute top-[85%] left-[2rem] right-0 bottom-0 opacity-0 transition duration-300 ease-in-out group-hover:opacity-100">
-        {movie.name}
-      </p>
-    </div>
+        <div className="absolute inset-0 flex items-end justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300">
+          <p className="text-white font-semibold text-lg py-4">{movie.name}</p>
+        </div>
+      </div>
+    </Link>
   );
 };
 

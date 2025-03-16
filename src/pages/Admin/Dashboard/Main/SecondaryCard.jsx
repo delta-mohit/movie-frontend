@@ -1,19 +1,20 @@
 const SecondaryCard = ({ pill, content, info, gradient }) => {
   return (
     <div
-      className={`w-[15rem] h-[12rem] relative mt-10 bg-gradient-to-b ${gradient} rounded-lg shadow-lg ml-5`}
+      className={`w-[80%] mx-auto sm:w-60 h-20 sm:h-40 relative bg-gradient-to-b ${gradient} rounded-lg shadow-lg p-4 flex flex-col justify-between items-center`}
     >
+      {/* Badge */}
       <div
-        className={`absolute -top-4 left-[5rem] border bg-gradient-to-b ${gradient} rounded-full py-2 px-5 text-sm text-gray-800 font-semibold`}
+        className={`absolute -top-3 px-4 py-1 bg-gradient-to-b ${gradient} rounded-full text-xs sm:text-sm text-gray-900 font-semibold`}
       >
         {pill}
       </div>
 
-      <div className="flex items-center justify-center h-full">
-        <h2 className="text-5xl font-bold text-white">{content}</h2>
-      </div>
+      {/* Content */}
+      <h2 className="text-3xl sm:text-4xl font-bold text-white">{content}</h2>
 
-      <div className="absolute bottom-4 left-12 text-sm text-white">{info}</div>
+      {/* Info */}
+      <p className="text-xs sm:text-sm text-white">{info}</p>
     </div>
   );
 };
